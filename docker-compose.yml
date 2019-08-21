@@ -1,0 +1,42 @@
+version: '3'
+services:
+
+    server:
+      build: ./server
+      volumes: 
+        - ./server:/code
+      command: npm start
+      ports: 
+        - "8080:8080"
+      depends_on: 
+        - db
+
+    client:
+      build: ./client
+      volumes: 
+        - ./client:/code
+      command: npm start
+      ports: 
+        - "3000:3000"
+      depends_on: 
+        - server
+
+    db:
+      image: postgres
+      volumes: 
+        - db_data:/var/lib/postgresql/data
+      restart: always
+      environment: 
+        POSTGRES_DB: "my_db"
+        POSTGRES_USER: "manager"
+        POSTGRES_PASSWORD: "5432"
+
+
+    adminer:
+      image: adminer
+      restart: always
+      ports:
+        - 8000:8080
+
+volumes: 
+  db_data:
